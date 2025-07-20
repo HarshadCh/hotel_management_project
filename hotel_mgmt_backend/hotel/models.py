@@ -27,8 +27,8 @@ class Customer(models.Model):
     room_no = models.CharField(max_length=50,blank=True)
     check_in = models.DateTimeField()
     check_out = models.DateTimeField() 
-    identity_proof_number = models.CharField(max_length=50)
-    identity_type = models.CharField(max_length=50,choices=Identity_proof) 
+    identity_proof_number = models.CharField(max_length=50,blank=False)
+    identity_type = models.CharField(max_length=50,choices=Identity_proof,blank=False) 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
