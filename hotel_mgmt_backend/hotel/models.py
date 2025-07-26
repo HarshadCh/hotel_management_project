@@ -1,4 +1,6 @@
 from django.db import models
+import datetime
+
 
 # Option for the idnetities:
 Identity_proof = [
@@ -33,6 +35,14 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.name 
+    
+    def date_formatter(self):
+        date = self.check_in
+
+
+    def standard_date(date):
+        formated_date = date.strftime("%d/%m/%Y")
+        return formated_date
 
 class MenuItem(models.Model):
     id = models.AutoField(primary_key=True)
