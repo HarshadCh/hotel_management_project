@@ -5,9 +5,12 @@ from rest_framework.exceptions import ValidationError
 from .models import *
 
 class CustomerSerializer(serializers.ModelSerializer):
+    check_in = serializers.DateTimeField(input_formats=["%d-%m-%Y"],format="%d-%m-%Y")
+    check_out = serializers.DateTimeField(input_formats=["%d-%m-%Y"],format="%d-%m-%Y")
     class Meta:
-        model = Customer
-        fields = "__all__"
+        model = Customer 
+        exclude = ['created_at']
+        # fields = "__all__"
 
     def validate_phone_no(self, value):
         if len(value) != 10 or not value.isdigit():

@@ -3,12 +3,6 @@ import datetime
 from datetime import datetime
 import pytz
 
-# Standard function for the date(dd-mm-yyyy)
-def standard_date(date):
-    input_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-    formatted_date = input_date.strftime("%d-%m-%Y")
-    return formatted_date
-
 # Option for the idnetities:
 Identity_proof = [
     ("Aadhar Card", "Aadhar Card"),
