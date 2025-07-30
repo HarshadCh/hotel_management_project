@@ -41,7 +41,8 @@ def update_customer(request,id):
             serializers.save()
             return Response(serializers.data,status=status.HTTP_200_OK) 
         else:
-            message = {"info":serializers.error_messages}
+            print("this is not a valid data")
+            message = {"info":serializers.errors}
             return Response(message,status=status.HTTP_400_BAD_REQUEST)
     except:
         message = {"info":"Data not found for the given ID"}
