@@ -60,15 +60,13 @@ def delete_customer(request,id):
         return Response(message,status=status.HTTP_404_NOT_FOUND)
          
 @api_view(["GET"])
-def check_in_filter(request):
-    incoming_date = request.query_params.get("check_in")
-    check_in_date = datetime.fromisoformat(incoming_date)
-    print(check_in_date,'---------->>>>')
-    datetime_object =  check_in_date.strftime('%d-%m-%Y')
-    print(datetime_object,'---------->>>>')
+def check_in_filter(request): 
     try:
-        queryset = Customer.objects.filter(check_in = datetime_object)
-        # serializers = CustomerSerializer(queryset)
-        # print(serializers.data,'----->>>')
+        incoming_date = request.query_params.get("check_in")
+        check_in_date = datetime.strptime(incoming_date, '%d-%m-%Y').date() 
     except:
-        print("this is not working")
+        msg = {"info":"Date format is not matching, try dd-mm-yyyy format or missing chgec_in value"}
+        return Response(msg,status=status.HTTP_404_NOT_FOUND)
+    queryset = Customer.objects.filter(check_in = check_in_date) 
+    serializers = CustomerSerializer(queryset,many = True)
+    return Response(serializers.data,status=status.HTTP_200_OK)
