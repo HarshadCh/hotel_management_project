@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 from rest_framework import status
-
+from django.db.models import Q
 
 # Create your views here.
 @api_view(["GET"])
@@ -68,5 +68,21 @@ def check_in_filter(request):
         msg = {"info":"Date format is not matching, try dd-mm-yyyy format or missing chgec_in value"}
         return Response(msg,status=status.HTTP_404_NOT_FOUND)
     queryset = Customer.objects.filter(check_in = check_in_date) 
+    serializers = CustomerSerializer(queryset,many = True)
+    return Response(serializers.data,status=status.HTTP_200_OK) 
+    
+@api_view(["GET"])
+def two_date_check_in(request):
+    try:
+        print()
+        incoming_start_date = request.query_params.get("start_date")
+        incomig_end_date = request.query_params.get("end_date") 
+        start_date = datetime.strptime(incoming_start_date, '%d-%m-%Y').date() 
+        end_date = datetime.strptime(incomig_end_date, '%d-%m-%Y').date() 
+    except:
+        message = {"info":"Date format is not matching, try dd-mm-yyyy format or missing check_in value"}
+        return Response(message,status=status.HTTP_404_NOT_FOUND) 
+    
+    queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = end_date)) 
     serializers = CustomerSerializer(queryset,many = True)
     return Response(serializers.data,status=status.HTTP_200_OK)
