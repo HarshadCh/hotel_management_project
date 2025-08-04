@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path,include
-from .views import all_customer_list,insert_customer,single_customer,update_customer,delete_customer,check_in_filter,two_date_check_in
+from .views import all_customer_list,insert_customer,single_customer,update_customer,delete_customer,check_in_filter,two_date_check_in,search_by_name_phn,search_by_identity
 
 urlpatterns = [
     path('customer-list',all_customer_list,),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('update/<int:id>',update_customer,),
     path('delete/<int:id>',delete_customer,),
     path('check_in_filter/',two_date_check_in,),
+    path('search/',search_by_name_phn,),
+    path('search_identity/',search_by_identity,),
 ]

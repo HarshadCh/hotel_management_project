@@ -74,7 +74,6 @@ def check_in_filter(request):
 @api_view(["GET"])
 def two_date_check_in(request):
     try:
-        print()
         incoming_start_date = request.query_params.get("start_date")
         incomig_end_date = request.query_params.get("end_date") 
         start_date = datetime.strptime(incoming_start_date, '%d-%m-%Y').date() 
@@ -85,4 +84,30 @@ def two_date_check_in(request):
     
     queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = end_date)) 
     serializers = CustomerSerializer(queryset,many = True)
-    return Response(serializers.data,status=status.HTTP_200_OK)
+    return Response(serializers.data,status=status.HTTP_200_OK) 
+
+
+@api_view(["GET"])
+def search_by_name_phn(request):
+    try:
+        input_keyword =  request.query_params.get("search") 
+        queryset = Customer.objects.filter(name__icontains = input_keyword)   
+        if not queryset.exists():
+            queryset = Customer.objects.filter(phone_no = input_keyword) 
+        serializers = CustomerSerializer(queryset,many = True)
+        return Response(serializers.data,status=status.HTTP_200_OK) 
+    except:
+        message = {"info":"Check the Input"}
+        return Response(message,status=status.HTTP_404_NOT_FOUND) 
+
+
+@api_view(["GET"])
+def search_by_identity(request):
+    try:
+        input_keyword =  request.query_params.get("identity") 
+        queryset = Customer.objects.filter(identity_type = input_keyword)
+        serializers = CustomerSerializer(queryset,many = True)
+        return Response(serializers.data,status=status.HTTP_200_OK) 
+    except:
+        message = {"info":"Check the Input"}
+        return Response(message,status=status.HTTP_404_NOT_FOUND) 
