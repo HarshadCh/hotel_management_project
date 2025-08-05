@@ -5,6 +5,7 @@ from .models import *
 from .serializer import *
 from rest_framework import status
 from django.db.models import Q
+from rest_framework import viewsets
 
 # Create your views here.
 @api_view(["GET"])
@@ -111,3 +112,9 @@ def search_by_identity(request):
     except:
         message = {"info":"Check the Input"}
         return Response(message,status=status.HTTP_404_NOT_FOUND) 
+    
+@api_view(["GET"])
+def generate_report(request):
+    check_in_date =  request.query_params.get("date")
+    print(check_in_date,'-------->>>',type(check_in_date))
+         

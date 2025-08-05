@@ -8,6 +8,7 @@ urlpatterns = [
     path('get/<int:id>',single_customer,),
     path('update/<int:id>',update_customer,),
     path('delete/<int:id>',delete_customer,),
+    path('check_in_on/',check_in_filter,),
     path('check_in_filter/',two_date_check_in,),
     path('search/',search_by_name_phn,),
     path('search_identity/',search_by_identity,),
