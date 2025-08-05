@@ -6,6 +6,9 @@ from .serializer import *
 from rest_framework import status
 from django.db.models import Q
 from rest_framework import viewsets
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
 
 # Create your views here.
 @api_view(["GET"])
@@ -115,6 +118,10 @@ def search_by_identity(request):
     
 @api_view(["GET"])
 def generate_report(request):
-    check_in_date =  request.query_params.get("date")
-    print(check_in_date,'-------->>>',type(check_in_date))
+    input_date =  request.query_params.get("date")
+    check_in_date = datetime.strptime(input_date, '%d-%m-%Y').date() 
+    start_date = check_in_date - relativedelta(months = 1)
+    queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = check_in_date)) 
+    serializers = CustomerSerializer(queryset,many = True)
+    return Response(serializers.data,status=status.HTTP_200_OK) 
          
