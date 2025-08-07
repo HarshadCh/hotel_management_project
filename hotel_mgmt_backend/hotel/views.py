@@ -1,3 +1,5 @@
+import json
+import pandas as pd 
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -8,6 +10,7 @@ from django.db.models import Q
 from rest_framework import viewsets
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from rest_framework.utils.serializer_helpers import ReturnList
 
 
 # Create your views here.
@@ -121,7 +124,10 @@ def generate_report(request):
     input_date =  request.query_params.get("date")
     check_in_date = datetime.strptime(input_date, '%d-%m-%Y').date() 
     start_date = check_in_date - relativedelta(months = 1)
-    queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = check_in_date)) 
-    serializers = CustomerSerializer(queryset,many = True)
+    queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = check_in_date))
+    serializers = partialSerilizer(queryset,many = True)
+    output = ReturnList(serializers.data,serializers=None)
+    df = pd.DataFrame(output)
+    print(df)
     return Response(serializers.data,status=status.HTTP_200_OK) 
          
