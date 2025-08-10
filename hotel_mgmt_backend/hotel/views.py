@@ -1,4 +1,4 @@
-import json
+import io
 import pandas as pd 
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -11,6 +11,7 @@ from rest_framework import viewsets
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from rest_framework.utils.serializer_helpers import ReturnList
+from django.core.mail import EmailMessage
 
 
 # Create your views here.
@@ -121,13 +122,31 @@ def search_by_identity(request):
     
 @api_view(["GET"])
 def generate_report(request):
-    times_stamp = datetime.now().strftime("%Y-%m-%d")
-    input_date =  request.query_params.get("date")
-    check_in_date = datetime.strptime(input_date, '%d-%m-%Y').date() 
-    start_date = check_in_date - relativedelta(months = 1)
-    queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = check_in_date))
-    serializers = partialSerilizer(queryset,many = True)
-    df = pd.DataFrame(serializers.data)
-    csv_file =  df.to_csv(f"output_{times_stamp}.csv", index=False)
-    return Response(csv_file,status=status.HTTP_200_OK) 
-         
+    try:
+        input_date =  request.query_params.get("date")
+        check_in_date = datetime.strptime(input_date, '%d-%m-%Y').date() 
+        start_date = check_in_date - relativedelta(months = 1)
+        queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = check_in_date))
+        serializers = partialSerilizer(queryset,many = True)
+        df = pd.DataFrame(serializers.data)
+        csv_buffer = io.StringIO()
+        csv_file =  df.to_csv(csv_buffer, index=False)
+        csv_content = csv_buffer.getvalue() 
+        email = EmailMessage(
+                subject = "Monthly Report",
+                body = f"""Hello,\nPlease find the records from {start_date} to {check_in_date} based on check-in.""",
+                from_email='michaeljadhav69@gmail.com',
+                to=["harshadchavan92@gmail.com"]
+            )
+        try:
+            email.attach("report.csv", csv_content, "text/csv")
+            email.send() 
+            msg = {"info":"Mail has been sent succefully."}
+            return Response(msg,status=status.HTTP_200_OK) 
+        except:
+            message = {"info":"error while sending the mail"}
+            return Response(message,status=status.HTTP_404_NOT_FOUND)  
+    except:
+        message = {"info":"Check the Input"}
+        return Response(message,status=status.HTTP_404_NOT_FOUND)  
+
