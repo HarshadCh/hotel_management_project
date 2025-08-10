@@ -121,13 +121,13 @@ def search_by_identity(request):
     
 @api_view(["GET"])
 def generate_report(request):
+    times_stamp = datetime.now().strftime("%Y-%m-%d")
     input_date =  request.query_params.get("date")
     check_in_date = datetime.strptime(input_date, '%d-%m-%Y').date() 
     start_date = check_in_date - relativedelta(months = 1)
     queryset = Customer.objects.filter(Q(check_in__gte = start_date) & Q(check_in__lte = check_in_date))
     serializers = partialSerilizer(queryset,many = True)
-    output = ReturnList(serializers.data,serializers=None)
-    df = pd.DataFrame(output)
-    print(df)
-    return Response(serializers.data,status=status.HTTP_200_OK) 
+    df = pd.DataFrame(serializers.data)
+    csv_file =  df.to_csv(f"output_{times_stamp}.csv", index=False)
+    return Response(csv_file,status=status.HTTP_200_OK) 
          
