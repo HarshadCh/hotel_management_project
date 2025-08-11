@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from rest_framework.utils.serializer_helpers import ReturnList
 from django.core.mail import EmailMessage
-
+from rest_framework import viewsets
 
 # Create your views here.
 @api_view(["GET"])
@@ -150,3 +150,6 @@ def generate_report(request):
         message = {"info":"Check the Input"}
         return Response(message,status=status.HTTP_404_NOT_FOUND)  
 
+class MenuItemModelViewSet(viewsets.ModelViewSet):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
