@@ -152,4 +152,14 @@ def generate_report(request):
 
 class MenuItemModelViewSet(viewsets.ModelViewSet):
     queryset = MenuItem.objects.all()
-    serializer_class = MenuItemSerializer
+    serializer_class = MenuItemSerializer 
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.query_params.get("category")
+        if category:
+            queryset = MenuItem.objects.filter(category = category)
+            return queryset
+        else:
+            return queryset
+        
