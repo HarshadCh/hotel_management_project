@@ -13,6 +13,9 @@ from dateutil.relativedelta import relativedelta
 from rest_framework.utils.serializer_helpers import ReturnList
 from django.core.mail import EmailMessage
 from rest_framework import viewsets
+from django.db.models import Count
+
+
 
 # Create your views here.
 @api_view(["GET"])
@@ -162,4 +165,10 @@ class MenuItemModelViewSet(viewsets.ModelViewSet):
             return queryset
         else:
             return queryset
-        
+    
+@api_view(["GET"])
+def most_order(request):
+    queryset = MenuItem.objects.annotate(total_count = Count("name")).values("name","total_count")
+    serializers = MenuItemSerializer(queryset,many=True)
+    print(serializers.data,'---------->>>>>>')
+    return Response(serializers.data,status=status.HTTP_200_OK)

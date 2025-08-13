@@ -54,6 +54,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class MenuItemSerializer(serializers.ModelSerializer):
+    total_count = serializers.IntegerField(read_only=True) 
     class Meta:
         model = MenuItem
         fields = "__all__"
@@ -81,4 +82,4 @@ class partialSerilizer(serializers.ModelSerializer):
     check_in = serializers.DateTimeField(format="%d-%m-%Y")
     class Meta:
         model = Customer 
-        fields = ["name","phone_no","email","check_in","room_no"]
+        fields = ["name","phone_no","email","check_in","room_no"] 
