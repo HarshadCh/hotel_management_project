@@ -168,7 +168,10 @@ class MenuItemModelViewSet(viewsets.ModelViewSet):
     
 @api_view(["GET"])
 def most_order(request):
-    queryset = MenuItem.objects.annotate(total_count = Count("name")).values("name","total_count")
-    serializers = MenuItemSerializer(queryset,many=True)
-    print(serializers.data,'---------->>>>>>')
-    return Response(serializers.data,status=status.HTTP_200_OK)
+    queryset = MenuItem.objects.values("name").annotate(total_count = Count("name")).values("name","total_count").order_by("-total_count")
+    serializers = ParrtialMenuItemSerializer(queryset,many=True)
+    return Response(serializers.data,status=status.HTTP_200_OK) 
+
+class OrderModelviewset(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
