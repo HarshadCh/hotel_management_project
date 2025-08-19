@@ -174,4 +174,8 @@ def most_order(request):
 
 class OrderModelviewset(viewsets.ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+    serializer_class = OrderSerializer  
+
+class OrderItemViewset(viewsets.ModelViewSet):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
