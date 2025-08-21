@@ -72,8 +72,11 @@ class Bill(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
 
     def save(self, *args, **kwargs):
-        self.total_amount = self.order.order_item.menu_item.price
-        print(self.total_amount) 
+        total = 0
+        for item in self.order.order_item.all():
+            total += item.menu_item.price * item.quantity
+        self.total_amount = total  
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.order.customer.name} - {self.total_amount}"

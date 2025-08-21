@@ -14,8 +14,7 @@ from rest_framework.utils.serializer_helpers import ReturnList
 from django.core.mail import EmailMessage
 from rest_framework import viewsets
 from django.db.models import Count
-from rest_framework.generics import ListCreateAPIView
-
+from rest_framework.generics import ListAPIView
 
 # Create your views here.
 @api_view(["GET"])
@@ -180,6 +179,6 @@ class OrderItemViewset(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer 
 
-class ListCreateAPIViewBill_API(ListCreateAPIView):
+class ListCreateAPIViewBill_API(ListAPIView):
     queryset = Bill.objects.all()
     serializer_class = BillSerializer 

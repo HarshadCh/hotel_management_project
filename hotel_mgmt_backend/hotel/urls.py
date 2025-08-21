@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path,include
-from .views import all_customer_list,insert_customer,single_customer,update_customer,delete_customer,check_in_filter,two_date_check_in,search_by_name_phn,search_by_identity,generate_report,MenuItemModelViewSet,most_order,OrderModelviewset,OrderItemViewset
+from .views import all_customer_list,insert_customer,single_customer,update_customer,delete_customer,check_in_filter,two_date_check_in,search_by_name_phn,search_by_identity,generate_report,MenuItemModelViewSet,most_order,OrderModelviewset,OrderItemViewset,ListCreateAPIViewBill_API
 from rest_framework.routers import DefaultRouter
 
 
@@ -25,4 +25,5 @@ urlpatterns = [
     path('',include(r.urls)),
     path('',include(r.urls)),
     path('most_order/',most_order),
+    path('bill/',ListCreateAPIViewBill_API.as_view()),
 ]
