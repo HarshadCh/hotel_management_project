@@ -1,7 +1,8 @@
 from django.db import models
 import datetime
 from datetime import datetime
-import pytz
+from django.db.models import Sum, F
+
 
 # Option for the idnetities:
 Identity_proof = [
@@ -72,10 +73,10 @@ class Bill(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
 
     def save(self, *args, **kwargs):
-        total = 0
-        for item in self.order.order_item.all():
-            total += item.menu_item.price * item.quantity
-        self.total_amount = total  
+        total = self.order.order_item.aggregate(
+            total=Sum(F("menu_item__price") * F("quantity"))
+        )["total"] or 0
+        self.total_amount = total
         super().save(*args, **kwargs)
 
     def __str__(self):
